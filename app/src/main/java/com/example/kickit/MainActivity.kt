@@ -27,9 +27,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "loading") {
-                composable("loading") { LoadingScreen(navController) }
-                composable("login") { LoginScreen() }
+            NavHost(navController = navController, startDestination = "loading_screen") {
+                composable("loading_screen") { LoadingScreen(navController) }
+                composable("login_screen") { LoginScreen(navController) }
+                composable("signup") { SignUpScreen() }
+                composable("login_form") { LoginFormScreen() }
+                composable("guest_home") { GuestHomeScreen() }
             }
         }
     }
@@ -44,42 +47,101 @@ fun LoadingScreen(navController: NavController) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Loading...",
+            text = "Kick It...",
             fontSize = 24.sp,
             color = Color.White
         )
     }
     LaunchedEffect(Unit) {
-        delay(2000) // Show loading screen for 2 seconds
-        navController.navigate("login")
+        delay(2000) // Show loading screen for 3 seconds
+        navController.navigate("login_screen")
     }
 }
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.LightGray)
+    ) {
+        // App Name (Centered Text)
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Kick It",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+        }
+
+        // Bottom-Aligned Buttons (Side by Side)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 32.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly // Places buttons next to each other
+        ) {
+            Button(onClick = { navController.navigate("signup") }) {
+                Text(text = "Sign Up")
+            }
+            Button(onClick = { navController.navigate("login_form") }) {
+                Text(text = "Login")
+            }
+        }
+
+        // Discreet Guest Button (Top Right Corner)
+        // Move "Continue as Guest" button to the left side
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 16.dp, start = 16.dp) // Shift to left instead of right
+                .align(Alignment.TopStart) // Align to top left
+        ) {
+            TextButton(onClick = { navController.navigate("guest_home") }) {
+                Text(text = "Continue as Guest", color = Color.Gray) // Subtle styling
+            }
+        }
+
+    }
+}
+
+@Composable
+fun SignUpScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.LightGray),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = "Sign Up Screen", fontSize = 24.sp)
+    }
+}
+
+@Composable
+fun LoginFormScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Login",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            var username by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
+        Text(text = "Login Form Screen", fontSize = 24.sp)
+    }
+}
 
-            TextField(value = username, onValueChange = { username = it }, placeholder = { Text("Username") })
-            Spacer(modifier = Modifier.height(8.dp))
-            TextField(value = password, onValueChange = { password = it }, placeholder = { Text("Password") })
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { /* Handle login */ }) {
-                Text(text = "Login")
-            }
-        }
+@Composable
+fun GuestHomeScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Green),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = "Welcome, Guest!", fontSize = 24.sp, color = Color.White)
     }
 }
